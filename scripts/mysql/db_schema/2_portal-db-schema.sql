@@ -94,6 +94,7 @@ CREATE TABLE `strategy` (
   `note`        VARCHAR(128)     NOT NULL DEFAULT '',
   `run_begin`   VARCHAR(16)      NOT NULL DEFAULT '',
   `run_end`     VARCHAR(16)      NOT NULL DEFAULT '',
+  `week_days`   VARCHAR(16)      NOT NULL DEFAULT '',
   `tpl_id`      INT(10) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `idx_strategy_tpl_id` (`tpl_id`)
