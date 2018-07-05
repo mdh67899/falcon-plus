@@ -101,10 +101,10 @@ func checkWeekday(weekdays string, weekday time.Weekday) bool {
 	arr := strings.Split(weekdays, ",")
 	length := len(arr)
 
-	weekdayStr := fmt.Sprintf("d%", weekday)
+	weekdayStr := fmt.Sprintf("%d", weekday)
 
 	for i := 0; i < length; i++ {
-		if weekdayStr == arr[i] {
+		if weekdayStr == strings.TrimSpace(arr[i]) {
 			return true
 		}
 	}
