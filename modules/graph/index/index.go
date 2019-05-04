@@ -16,6 +16,8 @@ package index
 
 import (
 	log "github.com/Sirupsen/logrus"
+	"fmt"
+	"strings"
 
 	cmodel "github.com/open-falcon/falcon-plus/common/model"
 	"github.com/open-falcon/falcon-plus/modules/graph/g"
@@ -40,9 +42,10 @@ func ReceiveItem(item *cmodel.GraphItem, md5 string) {
 
 	// 已上报过的数据
 	if IndexedItemCache.ContainsKey(md5) {
-		old := IndexedItemCache.Get(md5).(*IndexCacheItem)
-		if uuid == old.UUID { // dsType+step没有发生变化,只更新缓存
-			IndexedItemCache.Put(md5, NewIndexCacheItem(uuid, item))
+		old := IndexedItemCache.Get(md5).(string)
+		old_uuid:=strings.split(old,"-")[0]
+		if uuid == old_uuid { // dsType+step没有发生变化,只更新缓存
+			IndexedItemCache.Put(md5, fmt.Sprintf('%s-%s-%d',uuid,item.DsType,item.Step))
 		} else { // dsType+step变化了,当成一个新的增量来处理
 			unIndexedItemCache.Put(md5, NewIndexCacheItem(uuid, item))
 		}
@@ -52,7 +55,7 @@ func ReceiveItem(item *cmodel.GraphItem, md5 string) {
 	// 针对 mysql索引重建场景 做的优化，是否有rrdtool文件存在,如果有 则认为MySQL中已建立索引；
 	rrdFileName := g.RrdFileName(g.Config().RRD.Storage, md5, item.DsType, item.Step)
 	if g.IsRrdFileExist(rrdFileName) {
-		IndexedItemCache.Put(md5, NewIndexCacheItem(uuid, item))
+		IndexedItemCache.Put(md5, fmt.Sprintf('%s-%s-%d',uuid,item.DsType,item.Step))
 		return
 	}
 
