@@ -16,11 +16,12 @@ package funcs
 
 import (
 	"fmt"
-	"github.com/open-falcon/falcon-plus/common/model"
-	"github.com/toolkits/nux"
 	"log"
 	"strings"
 	"sync"
+
+	"github.com/open-falcon/falcon-plus/common/model"
+	"github.com/toolkits/nux"
 )
 
 var (
@@ -125,6 +126,12 @@ func DiskIOMetrics() (L []*model.MetricValue) {
 		L = append(L, CounterValue("disk.io.ios_in_progress", ds.IosInProgress, device))
 		L = append(L, CounterValue("disk.io.msec_total", ds.MsecTotal, device))
 		L = append(L, CounterValue("disk.io.msec_weighted_total", ds.MsecWeightedTotal, device))
+		//Kernel 4.18+ appends four more fields for discard, it's just valid in Kernel 4.18+
+		L = append(L, CounterValue("disk.io.discard_requests", ds.DiscardRequests, device))
+		L = append(L, CounterValue("disk.io.discard_merged", ds.DiscardMerged, device))
+		L = append(L, CounterValue("disk.io.discard_sectors", ds.DiscardSectors, device))
+		L = append(L, CounterValue("disk.io.msec_discard", ds.MsecDiscard, device))
+
 	}
 	return
 }
